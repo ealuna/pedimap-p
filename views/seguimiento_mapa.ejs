@@ -1,0 +1,228 @@
+<% var dataUser = usuario.datos %>
+<% var typeUser = usuario.tipo['id'] %>
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include layouts/meta_default %>
+
+    <title>Pedimap</title>
+
+    <% include layouts/libraries/styles/bootstrap.ejs %>
+    <% include layouts/libraries/styles/font_awesome.ejs %>
+    <% include layouts/libraries/styles/material_design.ejs %>
+    <% include layouts/libraries/styles/chosen.ejs %>
+    <% include layouts/libraries/styles/datatables.ejs %>
+    <% include layouts/libraries/styles/datepicker.ejs %>
+    <link rel="stylesheet" href="/pedimap/assets/styles/default.css">
+    <link rel="stylesheet" href="/pedimap/assets/styles/header.css">
+    <link rel="stylesheet" href="/pedimap/assets/styles/body.css">
+
+    <% include layouts/libraries/scripts/material_design %>
+
+</head>
+
+<body>
+
+<div class="header">
+    <header>
+
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#nav-menu">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <div class="logo-container hidden-xs">
+            <img src="/pedimap/assets/logos/logo-white.png">
+            <b>Pedimap</b>
+        </div>
+        <% include layouts/nav_bar.ejs %>
+        <% include layouts/nav_menu.ejs %>
+
+        <button id="header-options"
+                class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">more_vert</i>
+        </button>
+
+        <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+            for="header-options">
+            <li class="mdl-menu__item">Actualizar</li>
+            <li class="mdl-menu__item" onclick="window.location.replace('/pedimap/app/logout')">Salir</li>
+        </ul>
+    </header>
+</div>
+
+<div class="content content-fixed">
+
+    <section class="content-menu collapse in" id="menu">
+        <div class="content-header">
+            <ol class="breadcrumb">
+                <li><a href="/pedimap/app/home">Inicio</a></li>
+                <li>Seguimiento</li>
+                <li class="active">Mapa</li>
+            </ol>
+        </div>
+
+        <div class="map-menu">
+            <div class="menu-header" data-toggle="collapse" data-target="#options">
+                <span class="fas fa-cog"></span>
+                <label>Ajustes del mapa</label>
+            </div>
+            <div id="options" class="menu-content">
+                <div class="menu-title">
+                    <span class="fas fa-cog"></span>
+                    <label>Ajustes del mapa</label>
+                </div>
+                <% if(typeUser === 'ADMIN'){ %>
+                <div class="filter-group">
+                    <div class="filter-group-header" data-toggle="collapse" data-target="#fvendedor">
+                        <span class="fas fa-industry"></span>
+                        <label>Filtros Administrativos</label>
+                    </div>
+                    <div id="fvendedor" class="filter-group-body">
+                        <%- include('layouts/inputs/select_chosen', {id: 'sucursal', label: 'SUCURSAL:', placeholder: '-- SUCURSAL --'}) %>
+                        <%- include('layouts/inputs/select_chosen', {id: 'esquema', label: 'ESQUEMA:', placeholder: '-- ESQUEMA --'}) %>
+                        <%- include('layouts/inputs/select_chosen', {id: 'jefe', label: 'JEFE DE VENTAS:', placeholder: '-- JEFE DE VENTAS --'}) %>
+                    </div>
+                </div>
+                <% } %>
+                <div class="filter-group">
+                    <div class="filter-group-header" data-toggle="collapse" data-target="#fcliente">
+                        <span class="fas fa-user"></span>
+                        <label>Filtros de Clientes</label>
+                    </div>
+                    <div id="fcliente" class="filter-group-body">
+                        <%- include('layouts/inputs/select_chosen', {id: 'canal', label: 'CANAL:', placeholder: '-- CANAL --'}) %>
+                        <%- include('layouts/inputs/select_chosen', {id: 'negocio', label: 'NEGOCIO:', placeholder: '-- NEGOCIO --'}) %>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <div class="filter-group-header" data-toggle="collapse" data-target="#fgeneral">
+                        <span class="fas fa-cog"></span>
+                        <label>Filtros Generales</label>
+                    </div>
+                    <div id="fgeneral" class="filter-group-body collapse in">
+                        <% if(['ADMIN', 'JEFEVENTAS'].includes(typeUser)){ %>
+                        <%- include('layouts/inputs/select_chosen', {id: 'supervisor', label: 'SUPERVISOR:', placeholder: '-- SUPERVISOR --'}) %>
+                        <% } %>
+
+                        <%- include('layouts/inputs/select_chosen', {id: 'vendedor', label: 'VENDEDOR:', placeholder: '-- VENDEDOR --'}) %>
+                        <%- include('layouts/inputs/select_chosen', {id: 'visita', label: 'VISITA:', placeholder: '-- VISITA --'}) %>
+                        <div class="input-container form-group has-feedback">
+                            <label for="fecha">FECHA:</label>
+                            <input id="fecha" type="text" class="datepicker"/>
+                        </div>
+
+                        <%- include('layouts/inputs/check_material', {id: 'showRuta', label: 'MOSTRAR RUTAS', disabled: false, checked: false}) %>
+                        <%- include('layouts/inputs/check_material', {id: 'showCliente', label: 'MOSTRAR CLIENTES', disabled: false, checked: false}) %>
+                        <%- include('layouts/inputs/check_material', {id: 'showVisita', label: 'MOSTRAR VISITAS', disabled: false, checked: false}) %>
+                        <%- include('layouts/inputs/check_material', {id: 'showAlta', label: 'MOSTRAR ALTAS', disabled: false, checked: false}) %>
+                        <%- include('layouts/inputs/check_material', {id: 'showRecorrido', label: 'MOSTRAR RECORRIDO', disabled: true, checked: true}) %>
+                    </div>
+                </div>
+            </div>
+            <div class="menu-button">
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+                        data-toggle="modal" data-target="#buscar">
+                    BUSCAR ELEMENTO
+                </button>
+            </div>
+            <div class="menu-button">
+                <button id="modalLista"
+                        class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                    VER DISPOSITIVOS
+                </button>
+            </div>
+            <div class="menu-button">
+                <button id="modalResumen"
+                        class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                    RESUMEN DE VISITAS
+                </button>
+            </div>
+        </div>
+    </section>
+    <section class="content-fixed">
+        <div id="mapa" class="map-canvas"></div>
+    </section>
+</div>
+<div id="modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h6 class="modal-title"></h6>
+            </div>
+            <div class="modal-body">
+                <div id="tMovilModal" class="modal-table">
+                    <div class="loading"><img src="/pedimap/assets/images/ajax-loader.gif"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="buscar" class="modal fade" role="dialog">
+    <div class="modal-dialog alert">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h6 class="modal-title">BUSCAR ELEMENTO</h6>
+            </div>
+            <div class="modal-body">
+                <div class="select-container form-group has-feedback">
+                    <label for="tipoBuscar">Tipo</label>
+                    <select class="chosen" id="tipoBuscar" data-placeholder="Tipo de elemento">
+                        <option value="ruta">Ruta</option>
+                        <option value="cliente">Cliente</option>
+                        <option value="visita">Visita</option>
+                        <option value="alta">Alta</option>
+                        <option value="empleado">Empleado</option>
+                    </select>
+                </div>
+                <div class="input-container form-group has-feedback">
+                    <label for="codigoBuscar">Codigo:</label>
+                    <input id="codigoBuscar" type="text" onkeypress="appPedimap.keyBuscarElemento(event)"/>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="appPedimap.buscarElemento()">Buscar</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<% include layouts/libraries/scripts/jquery %>
+<% include layouts/libraries/scripts/bootstrap %>
+<% include layouts/libraries/scripts/datatables.ejs %>
+<%- include('layouts/libraries/scripts/chosen', {options: {width: '50%'}}) %>
+<% include layouts/libraries/scripts/infobubble.ejs %>
+<% include layouts/libraries/scripts/datepicker.ejs %>
+<script type="text/javascript" src="/pedimap/assets/scripts/main.js"></script>
+<script type="text/javascript" src="/pedimap/assets/scripts/maps.js"></script>
+<script type="text/javascript" src="/pedimap/assets/scripts/tables.js"></script>
+<script type="text/javascript">
+    (function () {
+        if (!window.appPedimap) {
+            window.appPedimap = {};
+        }
+        appPedimap.UserData = {
+            'type': '<%= typeUser %>',
+            'defaultSucursal': '<%= parseInt(dataUser.sucursal) || 1 %>',
+            'defaultEsquema': '<%= parseInt(dataUser.esquema) || 1 %>',
+            'defaultEmpleado': '<%= dataUser.codigo || '' %>' || null
+        };
+    })()
+</script>
+<% include layouts/scripts/fixed_height.ejs %>
+<% include layouts/scripts/nav_menu.ejs %>
+<%- include('layouts/libraries/scripts/google_maps', {id: 'mapa', script: 'map.preventa.js'}) %>
+
+</body>
+</html>

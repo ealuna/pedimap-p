@@ -1,0 +1,143 @@
+<% var dataUser = usuario.datos %>
+<% var typeUser = usuario.tipo['id'] %>
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include layouts/meta_default.ejs %>
+
+    <title>Pedimap</title>
+
+    <% include layouts/libraries/styles/bootstrap.ejs %>
+    <% include layouts/libraries/styles/font_awesome.ejs %>
+    <% include layouts/libraries/styles/material_design.ejs %>
+    <% include layouts/libraries/styles/chosen.ejs %>
+    <% include layouts/libraries/styles/datatables.ejs %>
+    <% include layouts/libraries/styles/datepicker.ejs %>
+    <% include layouts/libraries/styles/alertify.ejs %>
+    <link rel="stylesheet" href="/pedimap/assets/styles/default.css">
+    <link rel="stylesheet" href="/pedimap/assets/styles/header.css">
+    <link rel="stylesheet" href="/pedimap/assets/styles/body.new.css">
+
+    <% include layouts/libraries/scripts/material_design.ejs %>
+
+</head>
+
+<body>
+
+<div class="header">
+    <header>
+
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#nav-menu">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <div class="logo-container hidden-xs">
+            <img src="/pedimap/assets/logos/logo-white.png">
+            <b>Pedimap</b>
+        </div>
+        <% include layouts/nav_bar.ejs %>
+        <% include layouts/nav_menu.ejs %>
+
+        <button id="header-options"
+                class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">more_vert</i>
+        </button>
+
+        <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+            for="header-options">
+            <li class="mdl-menu__item">Actualizar</li>
+            <li class="mdl-menu__item" onclick="window.location.replace('/pedimap/app/logout')">Salir</li>
+        </ul>
+    </header>
+</div>
+
+<div class="content">
+    <section>
+        <div class="content-header">
+            <ol class="breadcrumb">
+                <li><a href="#">Inicio</a></li>
+                <li>Seguimiento</li>
+                <li class="active">Dispositivos</li>
+            </ol>
+        </div>
+    </section>
+    <section class="content">
+        <div class="report-title">
+            <div class="row">
+                <div class="col-md-12">
+                    <label>LISTA DE DISPOSITIVOS</label>
+                </div>
+            </div>
+        </div>
+        <div class="report-content">
+            <div class="row">
+                <div class="col-md-2 col-md-push-10">
+
+                    <% if(typeUser === 'ADMIN'){ %>
+                    <div class="filter-group">
+                        <div class="filter-group-header no-border-radius" data-toggle="collapse" data-target="#fadmin">
+                            <span class="fas fa-industry"></span>
+                            <label>Filtros Administrativos</label>
+                        </div>
+                        <div id="fadmin" class="filter-group-body no-border-radius">
+                            <%- include('layouts/inputs/select_chosen', {id: 'sucursal', label: 'SUCURSAL:', placeholder: '-- SELECCCIONAR --'}) %>
+                            <%- include('layouts/inputs/select_chosen', {id: 'esquema', label: 'ESQUEMA:', placeholder: '-- SELECCCIONAR --'}) %>
+                            <%- include('layouts/inputs/select_chosen', {id: 'jefe', label: 'JEFE DE VENTAS:', placeholder: '-- SELECCCIONAR --'}) %>
+                        </div>
+                    </div>
+                    <% } %>
+                    <div class="filter-group">
+                        <div class="filter-group-header no-border-radius" data-toggle="collapse"
+                             data-target="#fgeneral">
+                            <span class="fas fa-suitcase"></span>
+                            <label>Filtros Generales</label>
+                        </div>
+                        <div id="fgeneral" class="filter-group-body no-border-radius collapse in">
+                            <%- include('layouts/inputs/select_chosen', {id: 'supervisor', label: 'SUPERVISOR:', placeholder: '-- SUPERVISOR --'}) %>
+                            <%- include('layouts/inputs/check_material', {id: 'verAnulado', label: 'VER ANULADOS', disabled: false, checked: true   }) %>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-10 col-md-pull-2">
+                    <div class="box">
+                        <div id="tMovilModal" class="modal-table">
+                            <div class="loading"><img src="/pedimap/assets/images/ajax-loader.gif"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+<% include layouts/libraries/scripts/jquery.ejs %>
+<% include layouts/libraries/scripts/bootstrap.ejs %>
+<%- include('layouts/libraries/scripts/chosen.ejs', {options: {width: '100%'}}) %>
+<% include layouts/libraries/scripts/datatables.ejs %>
+<% include layouts/libraries/scripts/datepicker.ejs %>
+<% include layouts/libraries/scripts/alertify.ejs %>
+
+<script type="text/javascript" src="/pedimap/assets/scripts/main.js"></script>
+<script type="text/javascript" src="/pedimap/assets/scripts/charts.js"></script>
+<script type="text/javascript" src="/pedimap/assets/scripts/tables.js"></script>
+<script type="text/javascript">
+    (function () {
+        if (!window.appPedimap) window.appPedimap = {};
+        appPedimap.UserData = {
+            'type': '<%= typeUser %>',
+            'defaultSucursal': '<%= parseInt(dataUser.sucursal) || 1 %>',
+            'defaultEsquema': '<%= parseInt(dataUser.esquema) || 1 %>',
+            'defaultEmpleado': '<%= dataUser.codigo || '' %>' || null
+        };
+    })()
+</script>
+<% include layouts/scripts/nav_menu.ejs %>
+<% include layouts/scripts/fixed_height.ejs %>
+<script type="text/javascript" src="/pedimap/assets/scripts/table.dispositivo.js"></script>
+</body>
+</html>
+

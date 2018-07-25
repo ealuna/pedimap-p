@@ -1,0 +1,442 @@
+<% var dataUser = usuario.datos %>
+<% var typeUser = usuario.tipo['id'] %>
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include layouts/meta_default %>
+
+    <title>Avance de Volumen - Pedimap</title>
+
+    <% include layouts/libraries/styles/bootstrap %>
+    <% include layouts/libraries/styles/font_awesome %>
+    <% include layouts/libraries/styles/material_design %>
+    <% include layouts/libraries/styles/chosen %>
+    <link rel="stylesheet"
+          href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css"/>
+    <link rel="stylesheet" href="/pedimap/assets/styles/default.css">
+    <link rel="stylesheet" href="/pedimap/assets/styles/header.css">
+    <link rel="stylesheet" href="/pedimap/assets/styles/body.css">
+
+    <% include layouts/libraries/scripts/material_design %>
+
+</head>
+
+<body>
+
+<div class="header">
+    <header>
+
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#nav-menu">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <div class="logo-container hidden-xs">
+            <img src="/pedimap/assets/logos/logo-white.png">
+            <b>Pedimap</b>
+        </div>
+        <% include layouts/nav_bar.ejs %>
+        <% include layouts/nav_menu.ejs %>
+
+        <button id="header-options"
+                class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">more_vert</i>
+        </button>
+
+        <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+            for="header-options">
+            <li class="mdl-menu__item">Actualizar</li>
+            <li class="mdl-menu__item" onclick="window.location.replace('/pedimap/app/logout')">Salir</li>
+        </ul>
+    </header>
+</div>
+
+<div class="content">
+    <section>
+        <div class="content-header">
+            <ol class="breadcrumb">
+                <li><a href="#">Pedimap</a></li>
+                <li><a href="#">Avance</a></li>
+                <li class="active">Volumen</li>
+            </ol>
+        </div>
+    </section>
+    <section class="content">
+        <div class="report-title">
+            <div class="row">
+                <div class="col-md-6">
+                    <select title="Informe seleccionado" id="report" class="chosen">
+                        <option value="1">INFORME DE AVANCE DE CUOTA</option>
+                        <option value="2">INFORME DE AVANCE DE PREVENTA</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <div class="datepicker-container">
+                        <input title="Fecha seleccionada" id="date" type="text" class="datepicker" readonly/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content">
+
+        </div>
+
+    </section>
+
+</div>
+
+<% include layouts/libraries/scripts/jquery %>
+<% include layouts/libraries/scripts/bootstrap %>
+<%- include('layouts/libraries/scripts/chosen', {options: {width: '100%'}}) %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript"
+        src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript"
+        src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/locales/bootstrap-datepicker.es.min.js"></script>
+<script type="text/javascript" src="/pedimap/assets/scripts/main.js"></script>
+<script type="text/javascript" src="/pedimap/assets/scripts/charts.js"></script>
+<script type="text/javascript">
+    (function () {
+        if (!window.appPedimap) window.appPedimap = {};
+        appPedimap.UserData = {
+            'type': '<%= typeUser %>',
+            'defaultSucursal': '<%= parseInt(dataUser.sucursal) || 1 %>',
+            'defaultEsquema': '<%= parseInt(dataUser.esquema) || 1 %>',
+            'defaultJefe': '<%= typeUser === 'JEFEVENTAS' ? dataUser.codigo : '' %>' || null,
+            'defaultSupervisor': '<%= typeUser === 'SUPERVENTAS' ? dataUser.codigo : '' %>' || null
+        };
+    })()
+</script>
+
+<script type="text/javascript">
+    appPedimap.setNewStyle(
+        '.child-container, .menu-container, .nav-list { height: ' + (appPedimap.mobileHeight + 5) + 'px; }'
+        + '@media (max-width: 768px) {'
+        + '.content-fixed { height: ' + appPedimap.mobileHeight + 'px; }}'
+        + '@media (min-width: 768px) {'
+        + '.content-fixed { height: ' + appPedimap.deviceHeight + 'px; }}'
+    );
+    var nav_menu = $('#nav-menu');
+    nav_menu.on('show.bs.collapse', function () {
+        $('body').css('overflow-y', 'hidden');
+    });
+    nav_menu.on('hide.bs.collapse', function () {
+        $('body').css('overflow-y', 'visible');
+    });
+    $('#nav-menu div').on('show.bs.collapse', function () {
+        $('#nav-menu .in').collapse('hide');
+    });
+</script>
+
+<script type="text/javascript">
+    var picker = $('.datepicker');
+    picker.datepicker({
+        autoclose: true,
+        weekStart: 0,
+        inline: true,
+        language: 'es-ES',
+        format: 'dd/mm/yyyy',
+        orientation: 'bottom right'
+    });
+    picker.datepicker('setDate', new Date());
+
+
+    var html = '<div class="row">' +
+        '<div class="col-md-4">' +
+        '<div class="box">' +
+        '<div id="canvas2" class="chart-container summary">' +
+        '<canvas></canvas>' +
+        '</div>' +
+        '</div>' +
+        '<div class="box">' +
+        '<div id="canvas4" class="chart-container">' +
+        '<canvas></canvas>' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        '<div class="col-md-4">' +
+        '<div class="box">' +
+        '<div id="canvas1" class="chart-container">' +
+        '<canvas></canvas>' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        '<div class="col-md-4">' +
+        '<div class="box">' +
+        '<div id="canvas3" class="chart-container">' +
+        '<canvas></canvas>' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        '</div>'
+
+
+    document.getElementById('content').innerHTML = html
+
+    var data_ = [
+        {label: {value: 100, name: '100 - SUPERVISOR DE VENTAS 1'}, cuota: 80000, preventa: 50000},
+        {label: {value: 101, name: '101 - SUPERVISOR DE VENTAS 2'}, cuota: 75000, preventa: 70000},
+        {label: {value: 102, name: '102 - SUPERVISOR DE VENTAS 3'}, cuota: 55500, preventa: 30000},
+        {label: {value: 103, name: '103 - SUPERVISOR DE VENTAS 4'}, cuota: 90000, preventa: 35000},
+        {label: {value: 104, name: '104 - SUPERVISOR DE VENTAS 5'}, cuota: 100000, preventa: 50000}
+    ];
+
+    var data = [
+        {
+            label: {value: 100, name: '100 - SUPERVISOR DE VENTAS 1'},
+            cuota: 80000,
+            efectivo: 30000,
+            enruta: 2000,
+            preventa: 1000
+        },
+        {
+            label: {value: 101, name: '101 - SUPERVISOR DE VENTAS 2'},
+            cuota: 75000,
+            efectivo: 30000,
+            enruta: 2000,
+            preventa: 1000
+        },
+        {
+            label: {value: 102, name: '102 - SUPERVISOR DE VENTAS 3'},
+            cuota: 55500,
+            efectivo: 30000,
+            enruta: 2000,
+            preventa: 1000
+        },
+        {
+            label: {value: 103, name: '103 - SUPERVISOR DE VENTAS 4'},
+            cuota: 90000,
+            efectivo: 30000,
+            enruta: 2000,
+            preventa: 1000
+        },
+        {
+            label: {value: 104, name: '104 - SUPERVISOR DE VENTAS 5'},
+            cuota: 100000,
+            efectivo: 30000,
+            enruta: 2000,
+            preventa: 1000
+        }
+    ];
+    var data5 = [
+        {label: 'GENERAL', cuota: 80000, efectivo: 30000, enruta: 2000, preventa: 1000}];
+
+    var data8 = [
+        {label: {value: 1, name: 'LECHE EVAPORADA'}, cuota: 80000, preventa: 50000},
+        {label: {value: 4, name: 'YOGURT'}, cuota: 75000, preventa: 70000},
+        {label: {value: 3, name: 'LECHE FRESCA'}, cuota: 55500, preventa: 30000},
+        {label: {value: 5, name: 'MANTEQUILLA'}, cuota: 50000, preventa: 35000},
+        {label: {value: 7, name: 'REFRESCO'}, cuota: 30000, preventa: 20000},
+        {label: {value: 8, name: 'MERMERLADA'}, cuota: 20000, preventa: 10000},
+        {label: {value: 9, name: 'QUESO'}, cuota: 10000, preventa: 7000},
+        {label: {value: 10, name: 'NECTAR'}, cuota: 8000, preventa: 6005},
+        {label: {value: 11, name: 'CONSERVA DE PESCADO'}, cuota: 9000, preventa: 4500},
+        {label: {value: 12, name: 'AGUA'}, cuota: 9000, preventa: 2800},
+        {label: {value: 13, name: 'MANJAR'}, cuota: 5000, preventa: 3000},
+        {label: {value: 14, name: 'AZUCAR'}, cuota: 2000, preventa: 500},
+        {label: {value: 15, name: 'COMPOTA'}, cuota: 1000, preventa: 800},
+        {label: {value: 16, name: 'LECHE CONDENSADA'}, cuota: 800, preventa: 0},
+        {label: {value: 17, name: 'CREMA DE LECHE'}, cuota: 700, preventa: 600},
+        {label: {value: 18, name: 'TE'}, cuota: 500, preventa: 300},
+        {label: {value: 19, name: 'CEREALES'}, cuota: 500, preventa: 500},
+        {label: {value: 20, name: 'BARRA CEREALES'}, cuota: 500, preventa: 400},
+        {label: {value: 21, name: 'LECHE EN POLVO'}, cuota: 0, preventa: 800},
+        {label: {value: 22, name: 'SABORIZANTES'}, cuota: 500, preventa: 300}
+    ];
+
+
+    var data2 = [{name: 'Volumen', cuota: 60},
+        {name: 'Cobertura', cuota: 50},
+        {name: 'Efectividad', cuota: 30},
+        {name: 'Rechazo', cuota: 10}
+    ];
+
+    var data3 = [{name: 'Pendiente', clientes: 45},
+        {name: 'Coberturado', clientes: 55}
+    ];
+
+    var data4 = [{name: 'Cobertura Pendiente', clientes: 45},
+        {name: 'Cobertura Efectiva', clientes: 30},
+        {name: 'Cobertura En Ruta', clientes: 15},
+        {name: 'Cobertura Preventa', clientes: 5}
+    ];
+
+
+    appPedimap.chartBarHorizontal({
+        id: 'canvas1',
+        title: 'AVANCE DE VOLUMEN VS CUOTA POR MESA',
+        labels: 'label',
+        responsiveLabels: true,
+        data: data,
+        format: 'money',
+        onLabelClick: function (label) {
+            console.log(label)
+        },
+        datasets: [{
+            id: 'cuota',
+            label: 'Cuota',
+            stack: 0,
+            backgroundColor: '#ff6384'
+        }, {
+            id: 'efectivo',
+            label: 'Efectiva',
+            stack: 1,
+            backgroundColor: '#36a2eb'
+        }, {
+            id: 'enruta',
+            label: 'En Ruta',
+            stack: 1,
+            backgroundColor: '#cc65fe'
+        }, {
+            id: 'preventa',
+            label: 'Preventa',
+            stack: 1,
+            backgroundColor: '#ffce56'
+        }]
+    });
+
+    appPedimap.chartBarHorizontal({
+        id: 'canvas3',
+        title: 'PREVENTA VS CUOTA DEL DÍA POR LINEA DE PRODUCTO',
+        labels: 'label',
+        responsiveLabels: false,
+        data: data8,
+        format: 'money',
+        onLabelClick: function (label) {
+            console.log(label)
+        },
+        datasets: [{
+            id: 'cuota',
+            label: 'Cuota',
+            stack: 0,
+            backgroundColor: '#ff6384'
+        }, {
+            id: 'preventa',
+            label: 'Preventa',
+            stack: 1,
+            backgroundColor: '#ffce56'
+        }]
+    });
+    /*
+        appPedimap.chartBarHorizontal({
+            id: 'canvas5',
+            title: 'RECHAZO EN RUTA POR MESA',
+            labels: 'label',
+            responsiveLabels: true,
+            data: data,
+            format: 'money',
+            onLabelClick: function (label) {
+                console.log(label)
+            },
+            datasets: [{
+                id: 'cuota',
+                label: 'Rechazo En Ruta',
+                stack: 0,
+                backgroundColor: '#ff6384'
+            }]
+        });
+    */
+
+    /*
+        appPedimap.chartBarVertical({
+            id: 'canvas3',
+            title: 'PREVENTA VS CUOTA DEL DÍA',
+            labels: 'name',
+            data: data,
+            format: 'money',
+            onLabelClick: function (label) {
+                console.log(label)
+            },
+            datasets: [{
+                id: 'cuota',
+                label: 'Cuota',
+                stack: 0,
+                backgroundColor: '#ff6384'
+            }, {
+                id: 'preventa',
+                label: 'Preventa',
+                stack: 1,
+                backgroundColor: '#ffce56'
+            }]
+        });
+    */
+    /*
+        appPedimap.chartBarVertical({
+            id: 'canvas2',
+            title: 'RESUMEN GENERAL DE PREVENTA',
+            labels: 'name',
+            data: data2,
+            format: 'percentage',
+            onLabelClick: function (label) {
+                console.log(label)
+            },
+            legend: false,
+            datasets: [{
+                id: 'cuota',
+                label: 'Cuota',
+                stack: 0,
+                backgroundColor: [
+                    '#36a2eb',
+                    '#cc65fe',
+                    '#4bc0c0',
+                    '#ff6384'
+                ]
+            }]
+        });*/
+    /*
+        appPedimap.chartPie({
+            id: 'canvas6',
+            title: 'COBERTURA DE PREVENTA',
+            labels: 'name',
+            data: data3,
+            format: 'percentage',
+            datasets: [{
+                id: 'clientes',
+                backgroundColor: [
+                    '#ff6384',
+                    '#ffce56'
+                ]
+            }]
+        });
+
+        appPedimap.chartPie({
+            id: 'canvas5',
+            title: 'AVANCE DE COBERTURA VS CARTERA',
+            labels: 'name',
+            data: data4,
+            format: 'percentage',
+            datasets: [{
+                id: 'clientes',
+                backgroundColor: [
+                    '#ff6384',
+                    '#36a2eb',
+                    '#cc65fe',
+                    '#ffce56'
+                ]
+            }]
+        });
+
+        appPedimap.chartPie({
+            id: 'canvas6',
+            title: 'PREVENTA VS CARTERA DEL DÍA',
+            labels: 'name',
+            data: data3,
+            format: 'percentage',
+            datasets: [{
+                id: 'clientes',
+                backgroundColor: [
+                    '#ff6384',
+                    '#ffce56'
+                ]
+            }]
+        });
+    */
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,71 @@
+#!/usr/bin/env node
+
+"use strict";
+
+const cluster = require('cluster');
+
+cluster.on('exit', (worker) => {
+    console.log('Worker %d detenido :(', worker.id);
+    cluster.fork();
+});
+
+if (cluster.isMaster) {
+
+    const cpuCount = require('os').cpus().length;
+
+    for (var i = 0; i < cpuCount; i++) {
+        cluster.fork();
+    }
+
+}
+else {
+
+    const app = require('../app');
+    const http = require('http');
+    const debug = require('debug')('pedimap2:server');
+
+    const port = (() => {
+        const val = process.env.PORT || '3000';
+        const port = parseInt(val, 10);
+        if (isNaN(port)) return val;
+        if (port >= 0) return port;
+        return false;
+    })();
+
+    app.set('port', port);
+
+    const server = http.createServer(app);
+
+    server.listen(port);
+
+    server.on('error', (error) => {
+        if (error.syscall !== 'listen') {
+            throw error;
+        }
+
+        const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+
+        switch (error.code) {
+            case 'EACCES':
+                console.error(bind + ' requires elevated privileges');
+                process.exit(1);
+                break;
+            case 'EADDRINUSE':
+                console.error(bind + ' is already in use');
+                process.exit(1);
+                break;
+            default:
+                throw error;
+        }
+    });
+
+    server.on('listening', () => {
+        const addr = server.address();
+        const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
+        debug('Listening on ' + bind);
+    });
+
+
+    console.log('La aplicacion esta ejecuntadose en el Worker ' + cluster.worker.id);
+
+}

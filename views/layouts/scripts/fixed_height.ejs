@@ -1,0 +1,9 @@
+<script type="text/javascript">
+    appPedimap.setNewStyle(
+        '.child-container, .menu-container, .nav-list { height: ' + (appPedimap.mobileHeight + 5) + 'px; }'
+        + '@media (max-width: 768px) {'
+        + '.content-fixed { height: ' + appPedimap.mobileHeight + 'px; }}'
+        + '@media (min-width: 768px) {'
+        + '.content-fixed { height: ' + appPedimap.deviceHeight + 'px; }}'
+    );
+</script>

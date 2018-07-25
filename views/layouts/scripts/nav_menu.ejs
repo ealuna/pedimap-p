@@ -1,0 +1,12 @@
+<script type="text/javascript">
+    var nav_menu = $('#nav-menu');
+    nav_menu.on('show.bs.collapse', function () {
+        $('body').css('overflow-y', 'hidden');
+    });
+    nav_menu.on('hide.bs.collapse', function () {
+        $('body').css('overflow-y', 'visible');
+    });
+    $('#nav-menu div').on('show.bs.collapse', function () {
+        $('#nav-menu .in').collapse('hide');
+    });
+</script>

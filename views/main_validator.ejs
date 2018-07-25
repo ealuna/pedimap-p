@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include layouts/meta_default %>
+
+    <title>Cargando... | Pedimap</title>
+
+    <% include layouts/libraries/styles/bootstrap %>
+
+    <link rel="stylesheet" href="/pedimap/assets/styles/default.css">
+    <style type="text/css">
+        body {
+            background: #fff;
+        }
+
+        img.loader {
+            margin: 10px;
+        }
+
+        .center.outer {
+            display: table;
+            position: absolute;
+            text-align: center;
+            height: 100%;
+            width: 100%;
+        }
+
+        .outer .middle {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .outer .middle .inner {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div class="center outer">
+    <div class="middle">
+        <div class="inner">
+            <img class="loader" src="/pedimap/assets/images/ajax-loader.gif">
+            <p>Espere un momento ...</p>
+        </div>
+    </div>
+</div>
+
+<% if(action === 'login'){ %>
+
+<script type="text/javascript">
+    (function () {
+        var tipo = '<%= usuario.tipo['id'] %>';
+        /*switch (tipo) {
+            case 'ADMIN':
+                window.location.replace("/pedimap/app/preventa/seguimiento/mapa");
+                break;
+            default:
+                break;
+        }*/
+        window.location.replace("/pedimap/app/preventa/seguimiento/mapa");
+    })();
+</script>
+
+<% } else if (action === 'logout') { %>
+
+<% include layouts/libraries/scripts/jquery %>
+<script type="text/javascript">
+    (function () {
+        $.post({
+            dataType: "json",
+            url: '/pedimap/api/usuario/logout',
+            data: {},
+            success: function () {
+                window.location.replace("/pedimap/app");
+            },
+            error: function () {
+                // window.location.replace("/pedimap/app");
+            }
+        });
+    })();
+</script>
+
+<% } %>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript"
+        src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript"
+        src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/locales/bootstrap-datepicker.es.min.js"></script>
+<script type="text/javascript">
+    var picker = $('.datepicker');
+    picker.datepicker({
+        autoclose: true,
+        weekStart: 0,
+        inline: true,
+        language: 'es-ES',
+        format: 'dd/mm/yyyy',
+        orientation: 'bottom right',
+        endDate: '+0d'
+    });
+    picker.datepicker('setDate', moment().format('DD/MM/YYYY'));
+</script>

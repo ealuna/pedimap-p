@@ -1,0 +1,143 @@
+body {
+    background: #fff;
+}
+
+.login-box {
+    width: 360px;
+    padding-top: 20px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.login-box-body {
+    padding: 20px;
+}
+
+.login-logo {
+    height: 100%;
+    font-size: 35px;
+    font-weight: 300;
+    text-align: center;
+}
+
+.form-control {
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    border: transparent;
+    background-color: #f1f1f1;
+}
+
+.login-logo img {
+    max-width: 40%;
+}
+
+.login-box-body .form-control-feedback {
+    color: #777;
+}
+
+.login-box-body label {
+    margin-bottom: 10px;
+}
+
+.select-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.select-container div {
+    text-align: left;
+}
+
+
+select {
+    border: transparent;
+    padding: 3px;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: #555;
+    display: block !important;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: 120px;
+}
+
+form .form-title {
+    text-transform: uppercase;
+}
+
+select:focus {
+    outline: none;
+}
+
+/* Material Design Lite Changes */
+
+form .mdl-button {
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.mdl-switch__label {
+    font-size: 14px;
+    font-weight: 100;
+}
+
+.mdl-progress {
+    width: 100%;
+    display: none;
+}
+
+/* Chosen changes */
+
+.chosen-container .chosen-drop {
+    border: none;
+    border-top: 0;
+    display: none;
+}
+
+.chosen-container .chosen-results li.highlighted {
+    background: none rgb(33, 150, 243);
+    color: #fff;
+}
+
+.chosen-container-single .chosen-single {
+    border: none;
+    border-radius: initial;
+    background: none #fff;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    color: #444;
+}
+
+.chosen-container-active.chosen-with-drop .chosen-single {
+    border: none;
+    background-image: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.chosen-container {
+    background-color: #fff;
+}
+
+.chosen-search-input {
+    display: none;
+    visibility: hidden;
+}
+
+option[value=""][disabled], .chosen-container .chosen-results li.disabled-result {
+    display: none;
+}
+
+@media (max-width: 414px) {
+    .login-box {
+        width: 90%;
+        padding-top: 0;
+    }
+}
+
+@media (max-width: 768px) {
+
+}

@@ -1,0 +1,318 @@
+<% var tipo = usuario.tipo['id'] %>
+<% var admins = ['ADMIN'] %>
+<% var jefes = ['ADMIN', 'JEFEVENTAS'] %>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include _layouts %>
+
+    <title>Seguimiento de Preventa | Pedimap</title>
+
+    <% include styles/libraries/bootstrap %>
+    <% include styles/libraries/fontawesome %>
+    <% include styles/libraries/material_design %>
+    <% include styles/libraries/chosen %>
+
+    <link rel="stylesheet" href="/pedimap/assets/styles/default.css">
+    <link rel="stylesheet" href="/pedimap/assets/styles/header.css">
+    <link rel="stylesheet" href="/pedimap/assets/styles/body.css">
+
+    <% include scripts/libraries/material_design %>
+    <%- include('scripts/libraries/google_maps', {id: 'mapa', script: 'map.js'}) %>
+
+</head>
+
+<body>
+
+<div class="header">
+    <header>
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#nav-menu">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <div id="nav-menu" class="nav-list">
+            <div id="main-menu" class="menu-container collapse in">
+                <nav>
+                    <ul class="menu-list">
+                        <li class="header-list">
+                            <div>
+                                <button type="button" data-toggle="collapse" data-target="#nav-menu">
+                                    <span class="right-arrow"></span>
+                                    <span class="left-arrow"></span>
+                                    <span>Menu</span>
+                                </button>
+                            </div>
+                        </li>
+                        <li class="menu-option">
+                            <div>
+                                <button type="button" data-toggle="collapse" data-target="#preventa-menu">
+                                    <span>Preventa</span>
+                                    <span class="right-arrow"></span>
+                                </button>
+                            </div>
+                        </li>
+                        <li class="menu-option">
+                            <div>
+                                <button type="button" data-target="#ventas-menu">
+                                    <span>Ventas</span>
+                                    <span class="right-arrow"></span>
+                                </button>
+                            </div>
+                        </li>
+                        <li class="menu-option"><a href="#">Transporte</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div id="preventa-menu" class="child-container collapse">
+                <nav class="child-menu">
+                    <ul class="child-list">
+                        <li class="header-child">
+                            <div>
+                                <button type="button" data-toggle="collapse" data-target="#main-menu">
+                                    <span class="left-arrow"></span>
+                                    <span>Preventa</span>
+                                </button>
+                            </div>
+                        </li>
+                        <li class="child-option">
+                            <div>
+                                <button type="button" data-target="#ventas-menu">
+                                    <span>Avance</span>
+                                    <span class="right-arrow"></span>
+                                </button>
+                            </div>
+                        </li>
+                        <li class="child-option">
+                            <div>
+                                <button type="button" data-toggle="collapse" data-target="#preventa-seguimiento">
+                                    <span>Seguimiento</span>
+                                    <span class="right-arrow"></span>
+                                </button>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div id="preventa-seguimiento" class="child-container collapse">
+                <nav class="child-menu">
+                    <ul class="child-list">
+                        <li class="header-child">
+                            <div>
+                                <button type="button" data-toggle="collapse" data-target="#preventa-menu">
+                                    <span class="left-arrow"></span>
+                                    <span>Preventa / Seguimiento</span>
+                                </button>
+                            </div>
+                        </li>
+                        <li class="child-option">
+                            <a href="#">Mapa</a>
+                        </li>
+                        <li class="child-option">
+                            <a href="#">Recorrido</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <button id="header-options"
+                class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">more_vert</i>
+        </button>
+
+        <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+            for="header-options">
+            <li class="mdl-menu__item">Actualizar</li>
+            <li class="mdl-menu__item">Salir</li>
+        </ul>
+    </header>
+
+
+</div>
+
+<div class="content content-fixed">
+
+    <section class="content-menu">
+
+        <div class="content-header">
+            <ol class="breadcrumb">
+                <li><a href="#">Preventa</a></li>
+                <li><a href="#">Seguimiento</a></li>
+                <li class="active">Mapa</li>
+            </ol>
+        </div>
+
+        <div class="map-menu">
+
+            <div class="menu-header" data-toggle="collapse" data-target="#options">
+                <span class="fas fa-cog"></span>
+                <label>Ajustes del mapa</label>
+            </div>
+            <div id="options" class="menu-content">
+                <div class="menu-title">
+                    <span class="fas fa-cog"></span>
+                    <label>Ajustes del mapa</label>
+                </div>
+                <% if(jefes.includes(tipo)){ %>
+                <div class="filter-group">
+                    <div class="filter-group-header" data-toggle="collapse" data-target="#fvendedor">
+                        <span class="fas fa-industry"></span>
+                        <label>Filtrar Vendedores</label>
+                    </div>
+                    <div id="fvendedor" class="filter-group-body">
+                        <% if(admins.includes(tipo)){ %>
+                        <%- include('layouts/input_select_chosen', {id: 'sucursal', label: 'SUCURSAL:', placeholder: '-- SUCURSAL --'}) %>
+                        <%- include('layouts/input_select_chosen', {id: 'esquema', label: 'ESQUEMA:', placeholder: '-- ESQUEMA --'}) %>
+                        <%- include('layouts/input_select_chosen', {id: 'jefe', label: 'JEFE DE VENTAS:', placeholder: '-- JEFE DE VENTAS --'}) %>
+                        <% } %>
+                        <%- include('layouts/input_select_chosen', {id: 'supervisor', label: 'SUPERVISOR:', placeholder: '-- SUPERVISOR --'}) %>
+                    </div>
+                </div>
+                <% } %>
+                <div class="filter-group">
+                    <div class="filter-group-header" data-toggle="collapse" data-target="#fcliente">
+                        <span class="fas fa-user"></span>
+                        <label>Filtrar Clientes</label>
+                    </div>
+                    <div id="fcliente" class="filter-group-body">
+                        <%- include('layouts/input_select_chosen', {id: 'canal', label: 'CANAL:', placeholder: '-- CANAL --'}) %>
+                        <%- include('layouts/input_select_chosen', {id: 'negocio', label: 'NEGOCIO:', placeholder: '-- NEGOCIO --'}) %>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <div class="options-header">
+                        <span class="fas fa-cog"></span>
+                        <label>Opciones Generales</label>
+                    </div>
+                    <div class="options-body">
+                        <%- include('layouts/input_select_chosen', {id: 'vendedor', label: 'VENDEDOR:', placeholder: '-- VENDEDOR --'}) %>
+                        <%- include('layouts/input_select_chosen', {id: 'visita', label: 'VISITA:', placeholder: '-- VISITA --'}) %>
+
+                        <%- include('layouts/input_check_material', {id: 'v_rutas', label: 'MOSTRAR RUTAS:'}) %>
+                        <%- include('layouts/input_check_material', {id: 'v_clientes', label: 'MOSTRAR CLIENTES:'}) %>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="content-fixed">
+        <div id="mapa" class="map-canvas"></div>
+    </section>
+</div>
+
+<% include scripts/libraries/jquery %>
+<% include scripts/libraries/bootstrap %>
+<%- include('scripts/libraries/chosen', {options: {width: '50%'}}) %>
+
+<script type="text/javascript" src="/pedimap/assets/scripts/utils.js"></script>
+<script type="text/javascript" src="/pedimap/assets/scripts/storage.js"></script>
+
+<script type="text/javascript">
+    var mobile_height = outerHeight || height || 480;
+    var device_height = (height || 720) - 50;
+    document.newStyle(
+        '.child-container, .menu-container, .nav-list { height: ' + (mobile_height + 5) + 'px; }'
+        + '@media (max-width: 768px) {'
+        + '.content-fixed { height: ' + mobile_height + 'px; }}'
+        + '@media (min-width: 768px) {'
+        + '.content-fixed { height: ' + device_height + 'px; }}'
+    );
+
+    var nav_menu = $('#nav-menu');
+
+    nav_menu.on('show.bs.collapse', function () {
+        $('body').css('overflow-y', 'hidden');
+    });
+
+    nav_menu.on('hide.bs.collapse', function () {
+        $('body').css('overflow-y', 'visible');
+    });
+
+    $('#nav-menu div').on('show.bs.collapse', function () {
+        $('#nav-menu .in').collapse('hide');
+    });
+
+</script>
+
+<% if(jefes.includes(tipo)){ %>
+<% if(admins.includes(tipo)){ %>
+
+<script type="text/javascript">
+    (function () {
+        var sucursal = parseInt('<%= usuario.datos.sucursal %>') || 1;
+        var esquema = parseInt('<%= usuario.datos.esquema %>') || 1;
+        var jefe = parseInt('<%= tipo === 'JEFEVENTAS' ? usuario.datos.codigo : 0 %>') || null;
+        var supervisor = parseInt('<%= tipo === 'SUPERVENTAS' ? usuario.datos.codigo : 0 %>') || null;
+
+        window.postRequest($, {
+            url: '/empresa/listar/sucursal',
+            success: function (response) {
+                document.setSelectData($('#sucursal'), response.data, {selected: sucursal});
+            }
+        });
+
+        window.postRequest($, {
+            url: '/empresa/listar/esquema',
+            data: {sucursal: sucursal},
+            success: function (response) {
+                document.setSelectData($('#esquema'), response.data, {selected: esquema});
+            }
+        });
+
+        window.postRequest($, {
+            url: '/empleado/listar/jefe',
+            data: {sucursal: sucursal, esquema: esquema},
+            success: function (response) {
+                jefe = document.setSelectData($('#jefe'), response.data, {name: 'nombre'});
+                /*window.postRequest($, {
+                    url: '/empleado/listar/supervisor',
+                    data: {sucursal: sucursal, esquema: esquema, jefe: jefe},
+                    success: function (response) {
+                        document.setSelectData($('#supervisor'), response.data, {name: 'nombre', first: true});
+                    }
+                });*/
+            }
+        });
+
+
+    })()
+
+
+</script>
+<% } %>
+
+<% } %>
+
+<script type="text/javascript">
+    (function () {
+        window.postRequest($, {
+            url: '/cliente/listar/tipo-canal',
+            success: function (response) {
+                document.setSelectData($('#canal'), response.data, {first: true});
+            }
+        });
+
+        window.postRequest($, {
+            url: '/cliente/listar/tipo-negocio',
+            success: function (response) {
+                document.setSelectData($('#negocio'), response.data, {first: true});
+            }
+        });
+
+        window.postRequest($, {
+            url: '/cliente/listar/tipo-visita',
+            success: function (response) {
+                document.setSelectData($('#visita'), response.data, {first: true});
+            }
+        });
+    })();
+</script>
+
+</body>
+
+</html>

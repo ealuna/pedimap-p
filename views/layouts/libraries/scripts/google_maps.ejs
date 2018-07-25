@@ -1,0 +1,14 @@
+<script type="text/javascript">
+    function newMap() {
+        appPedimap.newMap('<%= id %>', '<%= script %>');
+    }
+
+    (function () {
+        if (!window.appPedimap) return console.error('La aplicación requiere del modulo inicial');
+        appPedimap.setNewScript({
+            src: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCqHbqBdi02O7RkIsu75B89vjsRO2lEbl4&callback=newMap',
+            async: true,
+            defer: true
+        });
+    })();
+</script>

@@ -1,0 +1,260 @@
+<% var dataUser = usuario.datos %>
+<% var typeUser = usuario.tipo['id'] %>
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include layouts/meta_default.ejs %>
+
+    <title>Inicio - Pedimap</title>
+
+    <% include layouts/libraries/styles/bootstrap.ejs %>
+    <% include layouts/libraries/styles/font_awesome.ejs %>
+    <% include layouts/libraries/styles/material_design.ejs %>
+    <% include layouts/libraries/styles/chosen.ejs %>
+    <% include layouts/libraries/styles/datatables.ejs %>
+    <link rel="stylesheet"
+          href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css"/>
+    <link rel="stylesheet" href="/pedimap/assets/styles/default.css">
+    <link rel="stylesheet" href="/pedimap/assets/styles/header.css">
+    <link rel="stylesheet" href="/pedimap/assets/styles/body.css">
+
+    <% include layouts/libraries/scripts/material_design.ejs %>
+
+</head>
+
+<body>
+
+<div class="header">
+    <header>
+
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#nav-menu">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <div class="logo-container hidden-xs">
+            <img src="/pedimap/assets/logos/logo-white.png">
+            <b>Pedimap</b>
+        </div>
+        <% include layouts/nav_bar.ejs %>
+        <% include layouts/nav_menu.ejs %>
+
+        <button id="header-options"
+                class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">more_vert</i>
+        </button>
+
+        <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+            for="header-options">
+            <li class="mdl-menu__item">Actualizar</li>
+            <li class="mdl-menu__item" onclick="window.location.replace('/pedimap/app/logout')">Salir</li>
+        </ul>
+    </header>
+</div>
+
+<div class="content">
+    <section>
+        <div class="content-header">
+            <ol class="breadcrumb">
+                <li><a href="#">Pedimap</a></li>
+                <li class="active">Resumen</li>
+            </ol>
+        </div>
+    </section>
+    <section class="content">
+        <div class="report-title">
+            <div class="row">
+                <div class="col-md-6">
+                    <select title="Informe seleccionado" id="report" class="chosen">
+                        <option value="1">INFORME DE VOLUMEN DE PREVENTA</option>
+                        <option value="2">INFORME DE COBERTURA DE PREVENTA</option>
+                        <option value="3">INFORME DE EFECTIVIDAD DE PREVENTA</option>
+                        <option value="4">INFORME DE RECHAZO EN RUTA DE PREVENTA</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <div class="datepicker-container">
+                        <input title="Fecha seleccionada" id="date" type="text" class="datepicker" readonly/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="report-content">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="box">
+                        <div id="cResumen" class="chart-container summary">
+                            <div class="loading"><img src="/pedimap/assets/images/ajax-loader.gif"></div>
+                        </div>
+                        <div id="dResumen" class="table-container">
+                            <div id="tResumen" class="table-body collapse">
+                                <div class="loading"><img src="/pedimap/assets/images/ajax-loader.gif"></div>
+                            </div>
+                            <button type="button" data-toggle="collapse" data-target="#tResumen" style="display: none;">
+                                <label>Ver detalle</label>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 col-md-12 col-lg-6">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-green"><i class="fa fa-flag"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Bookmarks</span>
+                                    <span class="info-box-number">410</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-12 col-lg-6">
+                            <div class="info-box">
+                                <span class="info-box-icon"><i class="fa fa-flag"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Bookmarks</span>
+                                    <span class="info-box-number">410</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="box">
+                        <div id="cGeneral" class="chart-container general">
+                            <div class="loading"><img src="/pedimap/assets/images/ajax-loader.gif"></div>
+                        </div>
+                        <div id="dGeneral" class="table-container">
+                            <div id="tGeneral" class="table-body collapse">
+                                <div class="loading"><img src="/pedimap/assets/images/ajax-loader.gif"></div>
+                            </div>
+                            <button type="button" data-toggle="collapse" data-target="#tGeneral" style="display: none;">
+                                <label>Ver detalle</label>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="box">
+                        <div id="cMesa" class="chart-container">
+                            <div class="loading"><img src="/pedimap/assets/images/ajax-loader.gif"></div>
+                        </div>
+                        <div id="dMesa" class="table-container">
+                            <div id="tMesa" class="table-body collapse">
+                                <div class="loading"><img src="/pedimap/assets/images/ajax-loader.gif"></div>
+                            </div>
+                            <button type="button" data-toggle="collapse" data-target="#tMesa" style="display: none;">
+                                <label>Ver detalle</label>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="box">
+                        <div id="cLinea" class="chart-container">
+                            <div class="loading"><img src="/pedimap/assets/images/ajax-loader.gif"></div>
+                        </div>
+                        <div id="dLinea" class="table-container">
+                            <div id="tLinea" class="table-body collapse">
+                                <div class="loading"><img src="/pedimap/assets/images/ajax-loader.gif"></div>
+                            </div>
+                            <button type="button" data-toggle="collapse" data-target="#tLinea" style="display: none;">
+                                <label>Ver detalle</label>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+<div id="modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title">DETALLES DEL GRÁFICO</h5>
+            </div>
+            <div class="modal-body">
+                <div id="cMesaModal" class="chart-container modal-chart">
+                    <div class="loading"><img src="/pedimap/assets/images/ajax-loader.gif"></div>
+                    <canvas></canvas>
+                </div>
+                <div id="dMesaModal" class="table-container row">
+                    <div id="tMesaModal" class="table-body collapse">
+                        <div class="loading"><img src="/pedimap/assets/images/ajax-loader.gif"></div>
+                    </div>
+                    <button type="button" data-toggle="collapse" data-target="#tMesaModal" style="display: none;">
+                        <label>Ver detalle</label>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<% include layouts/libraries/scripts/jquery.ejs %>
+<% include layouts/libraries/scripts/bootstrap.ejs %>
+<%- include('layouts/libraries/scripts/chosen.ejs', {options: {width: '100%'}}) %>
+<% include layouts/libraries/scripts/datatables.ejs %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+<!--<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.3.0/dist/chartjs-plugin-datalabels.min.js" integrity="sha256-vEMJPcuMhmbyXmYeKbLgq8wjNFYc0SZQ7dSkwJEgq2w=" crossorigin="anonymous"></script>-->
+<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript"
+        src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript"
+        src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/locales/bootstrap-datepicker.es.min.js"></script>
+
+<script type="text/javascript" src="/pedimap/assets/scripts/main.js"></script>
+<script type="text/javascript" src="/pedimap/assets/scripts/charts.js"></script>
+<script type="text/javascript" src="/pedimap/assets/scripts/tables.js"></script>
+<script type="text/javascript">
+    (function () {
+        if (!window.appPedimap) window.appPedimap = {};
+        appPedimap.UserData = {
+            'type': '<%= typeUser %>',
+            'defaultSucursal': '<%= parseInt(dataUser.sucursal) || 1 %>',
+            'defaultEsquema': '<%= parseInt(dataUser.esquema) || 1 %>',
+            'defaultEmpleado': '<%= typeUser === 'JEFEVENTAS' ? dataUser.codigo : '' %>' || null
+        };
+    })()
+</script>
+
+<script type="text/javascript">
+    appPedimap.setNewStyle(
+        '.child-container, .menu-container, .nav-list { height: ' + (appPedimap.mobileHeight + 5) + 'px; }'
+        + '@media (max-width: 768px) {'
+        + '.content-fixed { height: ' + appPedimap.mobileHeight + 'px; }}'
+        + '@media (min-width: 768px) {'
+        + '.content-fixed { height: ' + appPedimap.deviceHeight + 'px; }}'
+    );
+    var nav_menu = $('#nav-menu');
+    nav_menu.on('show.bs.collapse', function () {
+        $('body').css('overflow-y', 'hidden');
+    });
+    nav_menu.on('hide.bs.collapse', function () {
+        $('body').css('overflow-y', 'visible');
+    });
+    $('#nav-menu div').on('show.bs.collapse', function () {
+        $('#nav-menu .in').collapse('hide');
+    });
+
+    var picker = $('.datepicker');
+    picker.datepicker({
+        autoclose: true,
+        weekStart: 0,
+        inline: true,
+        language: 'es-ES',
+        format: 'dd/mm/yyyy',
+        orientation: 'bottom right',
+        endDate: '+0d'
+    });
+    picker.datepicker('setDate', moment().format('DD/MM/YYYY'));
+
+</script>
+<script type="text/javascript" src="/pedimap/assets/scripts/chart.general.js"></script>
+</body>
+</html>

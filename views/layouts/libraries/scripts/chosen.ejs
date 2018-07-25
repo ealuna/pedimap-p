@@ -1,0 +1,6 @@
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.3/chosen.jquery.min.js"></script>
+<% if(options) { %>
+<script type="text/javascript">
+    $('.chosen').chosen(<%- JSON.stringify(options) %>)
+</script>
+<% } %>
